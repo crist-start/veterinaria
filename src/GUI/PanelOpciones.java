@@ -8,10 +8,16 @@ package GUI;
 import bd.Conexion;
 import entidades.Cliente;
 import entidades.Producto;
+import entidades.Servicio;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -27,6 +33,9 @@ public class PanelOpciones extends javax.swing.JPanel {
     DefaultListModel modCliente = new DefaultListModel();
     DefaultListModel modTelefonos = new DefaultListModel();
     DefaultTableModel modArticulo = new DefaultTableModel();
+    DefaultComboBoxModel modServicios = new DefaultComboBoxModel();
+    DefaultComboBoxModel modInicio = new DefaultComboBoxModel();
+    DefaultComboBoxModel modDuracion = new DefaultComboBoxModel();
 
     /**
      * Creates new form PanelCompras
@@ -35,13 +44,14 @@ public class PanelOpciones extends javax.swing.JPanel {
         initComponents();
         cargarClientes();
         cargaArticulos();
+        cargaServicios();
     }
 
     private void cargarClientes() {
         try {
             Conexion cn = new Conexion();
             ArrayList<Cliente> tabla = cn.getClientes();
-            modArticulo.setColumnIdentifiers(new String[]{"articulo", "precio", "cantidad","comprar"});
+            modArticulo.setColumnIdentifiers(new String[]{"articulo", "precio", "cantidad", "comprar"});
             jTable1.getColumn("articulo").setPreferredWidth(500);
             modCliente.removeAllElements();
             for (Cliente cliente : tabla) {
@@ -58,17 +68,34 @@ public class PanelOpciones extends javax.swing.JPanel {
             Conexion cn = new Conexion();
             ArrayList<Producto> tabla = cn.getArticulos();
             for (Producto producto : tabla) {
-                Integer[] disp=new Integer[producto.getDisponibles()+1];
+                Integer[] disp = new Integer[producto.getDisponibles() + 1];
                 /*for (int i = 0; i <= producto.getDisponibles(); i++) {
                     disp[i]=i;
                 }*/
-                modArticulo.addRow(new Object[]{producto,producto.getPrecio(),producto.getDisponibles(),0});
+                modArticulo.addRow(new Object[]{producto, producto.getPrecio(), producto.getDisponibles(), 0});
             }
         } catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "erorr en bd");
         }
 
+    }
+
+    private void cargaServicios() {
+        try {
+            Conexion cn = new Conexion();
+            ArrayList<Servicio> tabla = cn.getServicios();
+            for (Servicio servicio : tabla) {
+                modServicios.addElement(servicio);
+            }
+            jComboBox2.setModel(modInicio);
+            for (int i = 9; i < 16; i++) {
+                modInicio.addElement(new Time(i, 0, 0));
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "erorr en bd");
+        }
     }
 
     /**
@@ -86,13 +113,13 @@ public class PanelOpciones extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        boxServicios = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jComboBox2 = new javax.swing.JComboBox<>();
         jComboBox3 = new javax.swing.JComboBox<>();
-        jLabel5 = new javax.swing.JLabel();
+        labelCosto = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -118,6 +145,11 @@ public class PanelOpciones extends javax.swing.JPanel {
                 listaUsuariosMouseClicked(evt);
             }
         });
+        listaUsuarios.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                listaUsuariosKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(listaUsuarios);
 
         jLabel3.setText("lista de usuarios:");
@@ -126,19 +158,27 @@ public class PanelOpciones extends javax.swing.JPanel {
 
         jLabel2.setText("Motivo del servicio:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        boxServicios.setModel(this.modServicios);
+        boxServicios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boxServiciosActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Fecha del servicio:");
 
-        jLabel4.setText("Termina:");
+        jLabel4.setText("Duracion:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "9:00", "10:00", "11:00", "12:00" }));
+        jComboBox3.setModel(this.modDuracion);
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel5.setText("Costo:");
+        labelCosto.setText("Costo:");
 
         jButton1.setText("Confirmar servicio");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -154,7 +194,7 @@ public class PanelOpciones extends javax.swing.JPanel {
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                     .addComponent(jLabel2)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(boxServicios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                     .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
@@ -165,7 +205,7 @@ public class PanelOpciones extends javax.swing.JPanel {
                             .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
+                        .addComponent(labelCosto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1)
                         .addGap(22, 22, 22))))
@@ -176,7 +216,7 @@ public class PanelOpciones extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(boxServicios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
@@ -189,7 +229,7 @@ public class PanelOpciones extends javax.swing.JPanel {
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
+                    .addComponent(labelCosto)
                     .addComponent(jButton1))
                 .addContainerGap())
         );
@@ -289,15 +329,13 @@ public class PanelOpciones extends javax.swing.JPanel {
 
     private void listaUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listaUsuariosMouseClicked
         Cliente cliente = (Cliente) listaUsuarios.getSelectedValue();
-        labelNombreCompleto.setText(cliente.getApellidoP()
-                + " " + cliente.getApellidoM()
-                + " " + cliente.getNombres());
+        labelNombreCompleto.setText(cliente.toString());
     }//GEN-LAST:event_listaUsuariosMouseClicked
 
     private void actualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actualizarActionPerformed
         try {
-            Conexion cn=new Conexion();
-            ArrayList<Cliente> tabla=cn.getClientes();
+            Conexion cn = new Conexion();
+            ArrayList<Cliente> tabla = cn.getClientes();
             modCliente.removeAllElements();
             for (Cliente cliente : tabla) {
                 modCliente.addElement(cliente);
@@ -306,14 +344,50 @@ public class PanelOpciones extends javax.swing.JPanel {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "erorr en bd");
         }
-        
+
     }//GEN-LAST:event_actualizarActionPerformed
+
+    private void boxServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxServiciosActionPerformed
+        Servicio s = (Servicio) boxServicios.getSelectedItem();
+        labelCosto.setText(Float.toString(s.getCosto()));
+        modDuracion.removeAllElements();
+        if (s.getDuracion() == null) {
+            for (int i = 1; i < 7; i++) {
+                modDuracion.addElement(new Time(i, 0, 0));
+            }
+        } else {
+            modDuracion.addElement(s.getDuracion());
+        }
+    }//GEN-LAST:event_boxServiciosActionPerformed
+
+    private void listaUsuariosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_listaUsuariosKeyPressed
+        // TODO add your handling code here:
+        Cliente cliente = (Cliente) listaUsuarios.getSelectedValue();
+        labelNombreCompleto.setText(cliente.toString());
+    }//GEN-LAST:event_listaUsuariosKeyPressed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Date temp = jDateChooser1.getDate();
+        Time temp2 = (Time) jComboBox2.getSelectedItem();
+        Time temp3 = (Time) jComboBox3.getSelectedItem();
+        Timestamp inicio = new Timestamp(temp.getYear(), temp.getMonth(), temp.getDate(), temp2.getHours(), temp2.getMinutes(), temp2.getSeconds(), 0);
+        Timestamp fin = new Timestamp(temp.getYear(), temp.getMonth(), temp.getDate(),
+                temp2.getHours() + temp3.getHours(), temp2.getMinutes() + temp3.getMinutes(), temp2.getSeconds() + temp3.getSeconds(), 0);
+        try {
+            Conexion cn= new Conexion();
+            Cliente c=(Cliente)listaUsuarios.getSelectedValue();
+            cn.insertarCita(inicio, fin,c.getUsuario() ,( (Servicio)boxServicios.getSelectedItem() ).getIdServicio() );
+        } catch (ClassNotFoundException | SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "erorr en bd");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton actualizar;
+    private javax.swing.JComboBox<String> boxServicios;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private com.toedter.calendar.JDateChooser jDateChooser1;
@@ -321,7 +395,6 @@ public class PanelOpciones extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -329,6 +402,7 @@ public class PanelOpciones extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel labelCosto;
     private javax.swing.JLabel labelNombreCompleto;
     private javax.swing.JList listaUsuarios;
     // End of variables declaration//GEN-END:variables

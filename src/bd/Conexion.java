@@ -12,6 +12,7 @@ import entidades.Estado;
 import entidades.Mascota;
 import entidades.Municipio;
 import entidades.Producto;
+import entidades.Servicio;
 import entidades.Telefono;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -19,6 +20,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
@@ -26,12 +28,15 @@ import java.util.ArrayList;
  * @author crist
  */
 public class Conexion {
+    String url="jdbc:mysql://localhost:3306/veterinaria";
+    String user="veterinario";
+    String paswword="baseDeDatosVeterinaria1";
 
     Connection conexion;
 
     public Conexion() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
-        conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/veterinaria", "veterinario", "baseDeDatosVeterinaria1");
+        conexion = DriverManager.getConnection(url, user, paswword);
     }
 
     public ArrayList<Estado> getEstados() throws SQLException {
@@ -270,5 +275,37 @@ public class Conexion {
         solicitar.close();
         datos.close();
         return tabla;
+    }
+    
+    public ArrayList<Servicio> getServicios() throws SQLException{
+        Statement solicitar = conexion.createStatement();
+        String query = "select * from servicio";
+        ResultSet datos = solicitar.executeQuery(query);
+        ArrayList<Servicio> tabla = new ArrayList<>();
+        if (!datos.next()) {
+            System.out.println("no hay datos");
+        } else {
+            do {
+                Servicio s=new Servicio();
+                s.setIdServicio(datos.getInt(1));
+                s.setMotivo(datos.getString(2));
+                s.setCosto(datos.getFloat(3));
+                s.setDuracion(datos.getTime(4));
+                tabla.add(s);
+            } while (datos.next());
+        }
+        solicitar.close();
+        datos.close();
+        return tabla;
+    }
+    
+    public void insertarCita(Timestamp inicio, Timestamp fin, String user4, Integer serv) throws SQLException {
+        String query = "Call insertarCita(?,?,?,?)";
+        CallableStatement solicitar = conexion.prepareCall(query);
+        solicitar.setTimestamp(1, inicio);
+        solicitar.setTimestamp(2, fin);
+        solicitar.setString(3, user4);
+        solicitar.setInt(4, serv);
+        ResultSet datos = solicitar.executeQuery();
     }
 }

@@ -113,9 +113,9 @@ public class PanelUsuario extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        ususario = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        contraseña = new javax.swing.JPasswordField();
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del cliente"));
 
@@ -407,7 +407,13 @@ public class PanelUsuario extends javax.swing.JPanel {
 
         jLabel2.setText("Nombre de usuario:");
 
-        jLabel3.setText("jLabel3");
+        jLabel3.setText("Contraseña");
+
+        contraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                contraseñaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -425,8 +431,8 @@ public class PanelUsuario extends javax.swing.JPanel {
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                            .addComponent(jPasswordField1))))
+                            .addComponent(ususario, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(contraseña))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -435,11 +441,11 @@ public class PanelUsuario extends javax.swing.JPanel {
                 .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ususario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -483,8 +489,8 @@ public class PanelUsuario extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             Cliente cliente = new Cliente();
-            String usuario = nombres.getText().split(" ")[0] + nombreMascota.getText();
-            String psswd = "iowuriwu2344";
+            String usuario = ususario.getText();
+            String psswd = new String(contraseña.getPassword());
             cliente.setUsuario(usuario);
             cliente.setPswd(psswd);
             cliente.setApellidoP(apeP.getText());
@@ -594,6 +600,10 @@ public class PanelUsuario extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_boxColoniaActionPerformed
 
+    private void contraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_contraseñaActionPerformed
+        System.out.println(contraseña.getPassword());
+    }//GEN-LAST:event_contraseñaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField apeM;
     private javax.swing.JTextField apeP;
@@ -603,6 +613,7 @@ public class PanelUsuario extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> boxMunicipio;
     private javax.swing.JTextField calle;
     private javax.swing.JTextField codPostal;
+    private javax.swing.JPasswordField contraseña;
     private javax.swing.JTextField correo;
     private javax.swing.JComboBox<String> edadMascota;
     private javax.swing.JRadioButton femenino;
@@ -615,8 +626,6 @@ public class PanelUsuario extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelAM;
     private javax.swing.JLabel labelAP;
     private javax.swing.JLabel labelCP;
@@ -644,5 +653,6 @@ public class PanelUsuario extends javax.swing.JPanel {
     private javax.swing.JTextField numMovil;
     private javax.swing.JTextField razaMascota;
     private javax.swing.JTextField tipoMascota;
+    private javax.swing.JTextField ususario;
     // End of variables declaration//GEN-END:variables
 }
