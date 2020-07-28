@@ -429,8 +429,7 @@ public class PanelOpciones extends javax.swing.JPanel {
                 Conexion cn=new Conexion();
                 for (int i = 0; i < modArticulo.getRowCount(); i++) {
                     if(!modArticulo.getValueAt(i, 3).equals(0)){
-                        cn.insertarCompra(c.getUsuario(), ((Producto)modArticulo.getValueAt(i, 0)).getIdProd(), Integer.parseInt(modArticulo.getValueAt(i, 3).toString()));
-                        System.out.println();
+                        //cn.insertarCompra(c.getUsuario(), ((Producto)modArticulo.getValueAt(i, 0)).getIdProd(), Integer.parseInt(modArticulo.getValueAt(i, 3).toString()));
                     }
                 }
                 JOptionPane.showMessageDialog(this, "Compra Realizada");
