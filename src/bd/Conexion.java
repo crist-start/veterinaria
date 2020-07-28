@@ -299,13 +299,27 @@ public class Conexion {
         return tabla;
     }
     
-    public void insertarCita(Timestamp inicio, Timestamp fin, String user4, Integer serv) throws SQLException {
+    public int insertarCita(Timestamp inicio, Timestamp fin, String user4, Integer serv) throws SQLException {
         String query = "Call insertarCita(?,?,?,?)";
         CallableStatement solicitar = conexion.prepareCall(query);
         solicitar.setTimestamp(1, inicio);
         solicitar.setTimestamp(2, fin);
         solicitar.setString(3, user4);
         solicitar.setInt(4, serv);
+        ResultSet datos = solicitar.executeQuery();
+        if(datos.next()){
+            return datos.getInt(1);
+        }else{
+            return 0;
+        }
+    }
+    
+    public void insertarCompra(String user5,int producto,int piezas) throws SQLException {
+        String query = "Call insertarCompra(?,?,?)";
+        CallableStatement solicitar = conexion.prepareCall(query);
+        solicitar.setString(1, user5);
+        solicitar.setInt(2, producto);
+        solicitar.setInt(3, piezas);
         ResultSet datos = solicitar.executeQuery();
     }
 }
