@@ -175,9 +175,31 @@ public class Conexion {
         ResultSet datos = solicitar.executeQuery();
     }
 
-    public ArrayList<Producto> getArticulos() throws SQLException {
+    public ArrayList<Producto> getAccesorios() throws SQLException {
         Statement solicitud = conexion.createStatement();
-        String query = "select * from producto";
+        String query = "select * from accesorios";
+        ResultSet datos = solicitud.executeQuery(query);
+        ArrayList<Producto> tabla = new ArrayList<>();
+        if (!datos.next()) {
+            System.out.println("no hay datos");
+        } else {
+            do {
+                Producto pd=new Producto();
+                pd.setIdProd(datos.getInt(1));
+                pd.setProducto(datos.getString(2));
+                pd.setPrecio(datos.getFloat(3));
+                pd.setDisponibles(datos.getInt(4));
+                tabla.add(pd);
+            } while (datos.next());
+        }
+        solicitud.close();
+        datos.close();
+        return tabla;
+    }
+    
+    public ArrayList<Producto> getAlimentos() throws SQLException {
+        Statement solicitud = conexion.createStatement();
+        String query = "select * from alimentos";
         ResultSet datos = solicitud.executeQuery(query);
         ArrayList<Producto> tabla = new ArrayList<>();
         if (!datos.next()) {
@@ -314,12 +336,12 @@ public class Conexion {
         }
     }
     
-    public void insertarCompra(String user5,int producto,int piezas) throws SQLException {
+    public void insertarCompra(String user5,Integer producto,Float piezas) throws SQLException {
         String query = "Call insertarCompra(?,?,?)";
         CallableStatement solicitar = conexion.prepareCall(query);
         solicitar.setString(1, user5);
         solicitar.setInt(2, producto);
-        solicitar.setInt(3, piezas);
+        solicitar.setFloat(3, piezas);
         ResultSet datos = solicitar.executeQuery();
     }
 }

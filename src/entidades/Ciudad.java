@@ -5,13 +5,10 @@
  */
 package entidades;
 
-
-
 /**
  *
  * @author crist
  */
-
 public class Ciudad {
 
     private static final long serialVersionUID = 1L;
@@ -72,7 +69,11 @@ public class Ciudad {
 
     @Override
     public String toString() {
-        return ciudad;
+        if (!"".equals(ciudad)) {
+            return ciudad;
+        } else {
+            return "S/C";
+        }
     }
-    
+
 }

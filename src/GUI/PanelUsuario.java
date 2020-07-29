@@ -48,14 +48,35 @@ public class PanelUsuario extends javax.swing.JPanel {
             Estado es = new Estado(-1, "Selecciona estado");
             modEstado.addElement(es);
             boxMunicipio.setEnabled(false);
+            modMunicipio.removeAllElements();
             boxCiudad.setEnabled(false);
+            modCiudad.removeAllElements();
             boxColonia.setEnabled(false);
+            modColonia.removeAllElements();
             for (Estado estado : tabla) {
                 modEstado.addElement(estado);
             }
         } catch (ClassNotFoundException | SQLException ex) {
 
         }
+    }
+
+    public void borrarDatos() {
+        apeP.setText("");
+        apeM.setText("");
+        nombres.setText("");
+        correo.setText("");
+        numFijo.setText("");
+        numMovil.setText("");
+        calle.setText("");
+        numExterior.setText("");
+        numInterior.setText("");
+        codPostal.setText("");
+        nombreMascota.setText("");
+        tipoMascota.setText("");
+        razaMascota.setText("");
+        ususario.setText("");
+        contraseña.setText("");
     }
 
     /**
@@ -111,11 +132,12 @@ public class PanelUsuario extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         edadMascota = new javax.swing.JComboBox<>();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        crearUsuario = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         ususario = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         contraseña = new javax.swing.JPasswordField();
+        jButton1 = new javax.swing.JButton();
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del cliente"));
 
@@ -398,10 +420,10 @@ public class PanelUsuario extends javax.swing.JPanel {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos de la cuenta"));
 
-        jButton1.setText("crear usuario");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        crearUsuario.setText("crear usuario");
+        crearUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                crearUsuarioActionPerformed(evt);
             }
         });
 
@@ -415,6 +437,13 @@ public class PanelUsuario extends javax.swing.JPanel {
             }
         });
 
+        jButton1.setText("restablecer");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -423,7 +452,9 @@ public class PanelUsuario extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(167, 167, 167)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(crearUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(56, 56, 56)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -433,7 +464,7 @@ public class PanelUsuario extends javax.swing.JPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(ususario, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                             .addComponent(contraseña))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -447,7 +478,9 @@ public class PanelUsuario extends javax.swing.JPanel {
                     .addComponent(jLabel3)
                     .addComponent(contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(crearUsuario)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -486,7 +519,7 @@ public class PanelUsuario extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void crearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearUsuarioActionPerformed
         try {
             Cliente cliente = new Cliente();
             String usuario = ususario.getText();
@@ -527,26 +560,32 @@ public class PanelUsuario extends javax.swing.JPanel {
             cn.insertarTelefono(usuario, "fijo", numFijo.getText());
             cn.insertarTelefono(usuario, "movil", numMovil.getText());
             JOptionPane.showMessageDialog(this, "usuario:" + usuario + "\n" + psswd);
+            borrarDatos();
+            edadMascota.setSelectedIndex(0);
+            modEstado.removeAllElements();
+            cargarEstados();
         } catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "error en BD");
         }
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_crearUsuarioActionPerformed
 
     private void boxEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxEstadoActionPerformed
         Estado es = (Estado) modEstado.getSelectedItem();
         try {
             Conexion cn = new Conexion();
-            ArrayList<Municipio> tabla = cn.getMunicipios(es.getCEstado());
-            modMunicipio.removeAllElements();
-            modMunicipio.addElement(new Municipio(-1, -1, "Selecciona Municipio", -1));
-            for (Municipio municipio : tabla) {
-                modMunicipio.addElement(municipio);
+            if (es != null) {
+                ArrayList<Municipio> tabla = cn.getMunicipios(es.getCEstado());
+                modMunicipio.removeAllElements();
+                modMunicipio.addElement(new Municipio(-1, -1, "Selecciona Municipio", -1));
+                for (Municipio municipio : tabla) {
+                    modMunicipio.addElement(municipio);
+                }
+                boxMunicipio.setEnabled(true);
+                boxCiudad.setEnabled(false);
+                boxColonia.setEnabled(false);
             }
-            boxMunicipio.setEnabled(true);
-            boxCiudad.setEnabled(false);
-            boxColonia.setEnabled(false);
         } catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "error en base de datos");
@@ -595,7 +634,7 @@ public class PanelUsuario extends javax.swing.JPanel {
 
     private void boxColoniaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxColoniaActionPerformed
         Colonia col = (Colonia) modColonia.getSelectedItem();
-        if (col != null && col.getDCodigo()!=-1) {
+        if (col != null && col.getDCodigo() != -1) {
             codPostal.setText(Integer.toString(col.getDCodigo()));
         }
     }//GEN-LAST:event_boxColoniaActionPerformed
@@ -603,6 +642,11 @@ public class PanelUsuario extends javax.swing.JPanel {
     private void contraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_contraseñaActionPerformed
         System.out.println(contraseña.getPassword());
     }//GEN-LAST:event_contraseñaActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField apeM;
@@ -615,6 +659,7 @@ public class PanelUsuario extends javax.swing.JPanel {
     private javax.swing.JTextField codPostal;
     private javax.swing.JPasswordField contraseña;
     private javax.swing.JTextField correo;
+    private javax.swing.JButton crearUsuario;
     private javax.swing.JComboBox<String> edadMascota;
     private javax.swing.JRadioButton femenino;
     private javax.swing.JButton jButton1;

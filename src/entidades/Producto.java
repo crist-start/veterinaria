@@ -24,12 +24,10 @@ import javax.persistence.Table;
 public class Producto implements Serializable {
 
     private Integer idProd;
-
     private String producto;
-
     private float precio;
-
     private int disponibles;
+    private String tipo;
 
     public Producto() {
     }
@@ -38,11 +36,12 @@ public class Producto implements Serializable {
         this.idProd = idProd;
     }
 
-    public Producto(Integer idProd, String producto, float precio, int disponibles) {
+    public Producto(Integer idProd, String producto, float precio, int disponibles, String tipo) {
         this.idProd = idProd;
         this.producto = producto;
         this.precio = precio;
         this.disponibles = disponibles;
+        this.tipo = tipo;
     }
 
     public Integer getIdProd() {
@@ -75,6 +74,14 @@ public class Producto implements Serializable {
 
     public void setDisponibles(int disponibles) {
         this.disponibles = disponibles;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     @Override

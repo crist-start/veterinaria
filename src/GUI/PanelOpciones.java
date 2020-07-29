@@ -9,20 +9,16 @@ import bd.Conexion;
 import entidades.Cliente;
 import entidades.Producto;
 import entidades.Servicio;
+import java.awt.Color;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 
 /**
  *
@@ -32,10 +28,14 @@ public class PanelOpciones extends javax.swing.JPanel {
 
     DefaultListModel modCliente = new DefaultListModel();
     DefaultListModel modTelefonos = new DefaultListModel();
-    DefaultTableModel modArticulo = new DefaultTableModel();
+    TableModel modCarrito = new TableModel(new String[]{"Piezas", "Producto", "P/U", "pago"}, 0);
     DefaultComboBoxModel modServicios = new DefaultComboBoxModel();
     DefaultComboBoxModel modInicio = new DefaultComboBoxModel();
     DefaultComboBoxModel modDuracion = new DefaultComboBoxModel();
+    DefaultComboBoxModel modAccesorio = new DefaultComboBoxModel();
+    DefaultComboBoxModel modDispAccesorio = new DefaultComboBoxModel();
+    DefaultComboBoxModel modAlimento = new DefaultComboBoxModel();
+    DefaultComboBoxModel modDispAlimento = new DefaultComboBoxModel();
 
     /**
      * Creates new form PanelCompras
@@ -64,11 +64,17 @@ public class PanelOpciones extends javax.swing.JPanel {
     private void cargaArticulos() {
         try {
             Conexion cn = new Conexion();
-            ArrayList<Producto> tabla = cn.getArticulos();
-            modArticulo.setColumnIdentifiers(new String[]{"articulo", "precio", "Disponible", "Cantidad"});
-            jTable1.getColumn("articulo").setPreferredWidth(400);
+            ArrayList<Producto> tabla = cn.getAccesorios();
+            modAccesorio.removeAllElements();
+            modAccesorio.addElement(new Producto(-1, "Seleccione Accesorio", -1, -1, "Accesorio"));
             for (Producto producto : tabla) {
-                modArticulo.addRow(new Object[]{producto, producto.getPrecio(), producto.getDisponibles(), 0});
+                modAccesorio.addElement(producto);
+            }
+            ArrayList<Producto> tabla2 = cn.getAlimentos();
+            modAlimento.removeAllElements();
+            modAlimento.addElement(new Producto(-1, "Seleccione Alimento", -1, -1, "Alimento"));
+            for (Producto producto : tabla2) {
+                modAlimento.addElement(producto);
             }
         } catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
@@ -120,9 +126,21 @@ public class PanelOpciones extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tableCarrito = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
+        totalCompra = new javax.swing.JLabel();
+        boxAccesorios = new javax.swing.JComboBox<>();
+        boxAlimentos = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        boxCantidadAccesorio = new javax.swing.JComboBox<>();
+        addAccesorio = new javax.swing.JButton();
+        addAlimento = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        boxCantidadAlimentos = new javax.swing.JComboBox<>();
+        labeldispAccesorios = new javax.swing.JLabel();
+        labeldispAlimentos = new javax.swing.JLabel();
+        costoAcc = new javax.swing.JLabel();
+        costoAlim = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         labelNombreCompleto = new javax.swing.JLabel();
         actualizar = new javax.swing.JButton();
@@ -135,7 +153,7 @@ public class PanelOpciones extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 286, Short.MAX_VALUE)
+            .addGap(0, 306, Short.MAX_VALUE)
         );
 
         listaUsuarios.setModel(this.modCliente);
@@ -151,7 +169,7 @@ public class PanelOpciones extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(listaUsuarios);
 
-        jLabel3.setText("lista de clente:");
+        jLabel3.setText("lista de clentes:");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Generar cita"));
 
@@ -193,9 +211,7 @@ public class PanelOpciones extends javax.swing.JPanel {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(boxServicios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(46, 46, 46)
-                        .addComponent(labelCosto)
-                        .addGap(168, 168, 168))
+                        .addGap(255, 255, 255))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(26, 26, 26)
@@ -204,10 +220,12 @@ public class PanelOpciones extends javax.swing.JPanel {
                         .addComponent(jButton1)
                         .addGap(56, 56, 56))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
                         .addGap(33, 33, 33)
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(240, 240, 240))
+                        .addGap(58, 58, 58)
+                        .addComponent(labelCosto)
+                        .addGap(141, 141, 141))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -220,15 +238,16 @@ public class PanelOpciones extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(boxServicios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelCosto))
+                    .addComponent(boxServicios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelCosto))
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -238,15 +257,10 @@ public class PanelOpciones extends javax.swing.JPanel {
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Hacer compra"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Comprar Accesorios/Alimento"));
 
-        jTable1.setModel(this.modArticulo);
-        jTable1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jTable1KeyPressed(evt);
-            }
-        });
-        jScrollPane2.setViewportView(jTable1);
+        tableCarrito.setModel(this.modCarrito);
+        jScrollPane2.setViewportView(tableCarrito);
 
         jButton2.setText("Confirmar compra");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -255,8 +269,43 @@ public class PanelOpciones extends javax.swing.JPanel {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jLabel5.setText("Total:");
+        totalCompra.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+
+        boxAccesorios.setModel(this.modAccesorio);
+        boxAccesorios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boxAccesoriosActionPerformed(evt);
+            }
+        });
+
+        boxAlimentos.setModel(this.modAlimento);
+        boxAlimentos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boxAlimentosActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("Cantidad:");
+
+        boxCantidadAccesorio.setModel(this.modDispAccesorio);
+
+        addAccesorio.setText("añadir Accesorio");
+        addAccesorio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addAccesorioActionPerformed(evt);
+            }
+        });
+
+        addAlimento.setText("añadir alimento");
+        addAlimento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addAlimentoActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setText("Cantidad:");
+
+        boxCantidadAlimentos.setModel(this.modDispAlimento);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -265,23 +314,84 @@ public class PanelOpciones extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(boxAccesorios, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(costoAcc))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(boxAlimentos, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(costoAlim)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(boxCantidadAccesorio, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labeldispAccesorios)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(addAccesorio))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(boxCantidadAlimentos, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(labeldispAlimentos)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(addAlimento)))
+                        .addGap(39, 39, 39)))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)))
-                .addContainerGap())
+                        .addComponent(totalCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jLabel5))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(boxAccesorios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(costoAcc))
+                        .addGap(13, 13, 13)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel7)
+                                    .addComponent(boxCantidadAccesorio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(labeldispAccesorios, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(addAccesorio))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(boxAlimentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(costoAlim))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel8)
+                                    .addComponent(boxCantidadAlimentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(labeldispAlimentos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(addAlimento, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(jButton2))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(totalCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Nombre del cliente"));
@@ -317,16 +427,18 @@ public class PanelOpciones extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(actualizar)
-                        .addGap(0, 41, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(actualizar)
+                                .addGap(0, 34, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -339,25 +451,25 @@ public class PanelOpciones extends javax.swing.JPanel {
                     .addComponent(actualizar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(267, 267, 267))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1))
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void listaUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listaUsuariosMouseClicked
         Cliente cliente = (Cliente) listaUsuarios.getSelectedValue();
-        if (cliente!=null) {
+        if (cliente != null) {
             labelNombreCompleto.setText(cliente.toString());
         }
     }//GEN-LAST:event_listaUsuariosMouseClicked
@@ -386,9 +498,12 @@ public class PanelOpciones extends javax.swing.JPanel {
             for (int i = 1; i < 7; i++) {
                 modDuracion.addElement(new Time(i, 0, 0));
             }
+            jComboBox3.setVisible(true);
             jComboBox3.setEnabled(true);
         } else {
-            jLabel4.setText("Duracion(hrs:min:seg):"+s.getDuracion().toString());
+            jLabel4.setText("Duracion(hrs:min:seg):  " + s.getDuracion().toString());
+            modDuracion.addElement(s.getDuracion());
+            jComboBox3.setVisible(false);
             jComboBox3.setEnabled(false);
         }
     }//GEN-LAST:event_boxServiciosActionPerformed
@@ -396,7 +511,9 @@ public class PanelOpciones extends javax.swing.JPanel {
     private void listaUsuariosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_listaUsuariosKeyPressed
         // TODO add your handling code here:
         Cliente cliente = (Cliente) listaUsuarios.getSelectedValue();
-        labelNombreCompleto.setText(cliente.toString());
+        if (cliente != null) {
+            labelNombreCompleto.setText(cliente.toString());
+        }
     }//GEN-LAST:event_listaUsuariosKeyPressed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -412,7 +529,7 @@ public class PanelOpciones extends javax.swing.JPanel {
                 Conexion cn = new Conexion();
                 int id = cn.insertarCita(inicio, fin, c.getUsuario(), ((Servicio) boxServicios.getSelectedItem()).getIdServicio());
                 JOptionPane.showMessageDialog(this, "Cita generada:\n id de la cita:" + id + "\n fecha de la cita:" + inicio + "\n servicio:" + ((Servicio) boxServicios.getSelectedItem()).getMotivo());
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(this, "Seleccione usuario");
             }
         } catch (ClassNotFoundException | SQLException ex) {
@@ -421,18 +538,79 @@ public class PanelOpciones extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void boxAlimentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxAlimentosActionPerformed
+        // TODO add your handling code here:
+        Producto pd = (Producto) modAlimento.getSelectedItem();
+        modDispAlimento.removeAllElements();
+        if (pd != null) {
+            if (pd.getDisponibles() == -1) {
+                addAlimento.setVisible(false);
+                addAlimento.setEnabled(false);
+                labeldispAlimentos.setText("");
+            } else {
+                costoAlim.setText("Precio:$" + pd.getPrecio() + " MXN");
+                if (pd.getDisponibles() == 0) {
+                    addAlimento.setVisible(false);
+                    addAlimento.setEnabled(false);
+                    labeldispAlimentos.setForeground(Color.red);
+                    labeldispAlimentos.setText("no disponible");
+                } else {
+                    addAlimento.setVisible(true);
+                    addAlimento.setEnabled(true);
+                    labeldispAlimentos.setForeground(Color.green);
+                    labeldispAlimentos.setText("disponible");
+                    for (int i = 1; i <= pd.getDisponibles(); i++) {
+                        modDispAlimento.addElement(i);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_boxAlimentosActionPerformed
+
+    private void boxAccesoriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxAccesoriosActionPerformed
+        // TODO add your handling code here:
+        Producto pd = (Producto) modAccesorio.getSelectedItem();
+        modDispAccesorio.removeAllElements();
+        if (pd != null) {
+            if (pd.getDisponibles() == -1) {
+                addAccesorio.setVisible(false);
+                addAccesorio.setEnabled(false);
+                labeldispAccesorios.setText("");
+            } else {
+                costoAcc.setText("Precio:$" + pd.getPrecio() + " MXN");
+                if (pd.getDisponibles() == 0) {
+                    addAccesorio.setVisible(false);
+                    addAccesorio.setEnabled(false);
+                    labeldispAccesorios.setForeground(Color.red);
+                    labeldispAccesorios.setText("no disponible");
+                } else {
+                    addAccesorio.setVisible(true);
+                    addAccesorio.setEnabled(true);
+                    labeldispAccesorios.setForeground(Color.green);
+                    labeldispAccesorios.setText("disponible");
+                    for (int i = 1; i <= pd.getDisponibles(); i++) {
+                        modDispAccesorio.addElement(i);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_boxAccesoriosActionPerformed
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
             // TODO add your handling code here:
             Cliente c = (Cliente) listaUsuarios.getSelectedValue();
-            if (c!=null) {
-                Conexion cn=new Conexion();
-                for (int i = 0; i < modArticulo.getRowCount(); i++) {
-                    if(!modArticulo.getValueAt(i, 3).equals(0)){
-                        //cn.insertarCompra(c.getUsuario(), ((Producto)modArticulo.getValueAt(i, 0)).getIdProd(), Integer.parseInt(modArticulo.getValueAt(i, 3).toString()));
-                    }
+            if (c != null) {
+                Conexion cn = new Conexion();
+                int filas=modCarrito.getRowCount();
+                for (int i = 0; i <filas ; i++) {
+                    int prod = ((Producto) modCarrito.getValueAt(0, 1)).getIdProd();
+                    float cant = Float.parseFloat(modCarrito.getValueAt(0, 0).toString());
+                    modCarrito.removeRow(0);
+                    cn.insertarCompra(c.getUsuario(), prod, cant);
                 }
                 JOptionPane.showMessageDialog(this, "Compra Realizada");
+                cargaArticulos();
             } else {
                 JOptionPane.showMessageDialog(this, "Seleccione usuario");
             }
@@ -442,19 +620,44 @@ public class PanelOpciones extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jTable1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
+    private void addAccesorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAccesorioActionPerformed
         // TODO add your handling code here:
-        float total=0;
-        for (int i = 0; i < modArticulo.getRowCount(); i++) {
-            total=total+( Float.parseFloat(modArticulo.getValueAt(i, 1).toString())*Integer.parseInt(modArticulo.getValueAt(i, 3).toString()) );
+        Producto pd = (Producto) boxAccesorios.getSelectedItem();
+        Float cantidad = Float.parseFloat(boxCantidadAccesorio.getSelectedItem().toString());
+
+        modCarrito.addRow(new Object[]{cantidad, pd, pd.getPrecio(), pd.getPrecio() * cantidad});
+        float total = 0.00f;
+        for (int i = 0; i < modCarrito.getRowCount(); i++) {
+            total += Float.parseFloat(modCarrito.getValueAt(i, 3).toString());
         }
-        jLabel5.setText("Total:"+total);
-    }//GEN-LAST:event_jTable1KeyPressed
+        totalCompra.setText("Total:$" + total + " MXN");
+
+    }//GEN-LAST:event_addAccesorioActionPerformed
+
+    private void addAlimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAlimentoActionPerformed
+        // TODO add your handling code here:
+        Producto pd = (Producto) boxAlimentos.getSelectedItem();
+        Float cantidad = Float.parseFloat(boxCantidadAlimentos.getSelectedItem().toString());
+        modCarrito.addRow(new Object[]{cantidad, pd, pd.getPrecio(), pd.getPrecio() * cantidad});
+        float total = 0.00f;
+        for (int i = 0; i < modCarrito.getRowCount(); i++) {
+            total += Float.parseFloat(modCarrito.getValueAt(i, 3).toString());
+        }
+        totalCompra.setText("Total:$" + total + " MXN");
+    }//GEN-LAST:event_addAlimentoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton actualizar;
+    private javax.swing.JButton addAccesorio;
+    private javax.swing.JButton addAlimento;
+    private javax.swing.JComboBox<Producto> boxAccesorios;
+    private javax.swing.JComboBox<String> boxAlimentos;
+    private javax.swing.JComboBox<Integer> boxCantidadAccesorio;
+    private javax.swing.JComboBox<String> boxCantidadAlimentos;
     private javax.swing.JComboBox<String> boxServicios;
+    private javax.swing.JLabel costoAcc;
+    private javax.swing.JLabel costoAlim;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox2;
@@ -464,17 +667,34 @@ public class PanelOpciones extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel labelCosto;
     private javax.swing.JLabel labelNombreCompleto;
+    private javax.swing.JLabel labeldispAccesorios;
+    private javax.swing.JLabel labeldispAlimentos;
     private javax.swing.JList listaUsuarios;
+    private javax.swing.JTable tableCarrito;
+    private javax.swing.JLabel totalCompra;
     // End of variables declaration//GEN-END:variables
+}
+
+class TableModel extends DefaultTableModel {
+
+    public TableModel(Object[] ids, int cont) {
+        super(ids, cont);
+    }
+
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
+
 }
